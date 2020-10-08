@@ -7,7 +7,7 @@
 #include "MovingPlatform.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class APP_1_API AMovingPlatform : public AStaticMeshActor
@@ -23,5 +23,7 @@ public:
 
 	UPROPERTY(EditAnyWhere)
 	float Speed = 20;
-	
+
+	UPROPERTY(EditAnyWhere, Meta = (MakeEditWidget=true))
+	FVector TargetLocation;
 };
