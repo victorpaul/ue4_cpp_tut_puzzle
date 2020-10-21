@@ -13,9 +13,7 @@ APlatformTrigger::APlatformTrigger()
     PrimaryActorTick.bCanEverTick = true;
     TriggerVolume = CreateDefaultSubobject<UBoxComponent>(FName("TriggerVolume"));
 
-    UE_LOG(LogTemp, Warning, TEXT("Before condition"));
     if (ensure(TriggerVolume == nullptr)) return;
-    UE_LOG(LogTemp, Warning, TEXT("After condition"));
     RootComponent = TriggerVolume;
 
     TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapBegin);
@@ -38,20 +36,19 @@ void APlatformTrigger::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp,
                                       class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                       const FHitResult& SweepResult)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Activated"));
-
-    for (AMovingPlatform* Platform : PlatformsToTrigger)
-    {
-        Platform->AddActiveTrigger();
-    }
+    if (HasAuthority())
+        for (AMovingPlatform* Platform : PlatformsToTrigger)
+        {
+            Platform->AddActiveTrigger();
+        }
 }
 
 void APlatformTrigger::OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,
                                     class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Deactivated"));
-    for (AMovingPlatform* Platform : PlatformsToTrigger)
-    {
-        Platform->RemoveActiveTrigger();
-    }
+    if (HasAuthority())
+        for (AMovingPlatform* Platform : PlatformsToTrigger)
+        {
+            Platform->RemoveActiveTrigger();
+        }
 }
