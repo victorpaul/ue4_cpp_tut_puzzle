@@ -27,7 +27,7 @@ void AMovingPlatform::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (HasAuthority())
+    if (ActiveTriggers > 0 && HasAuthority())
     {
         FVector Location = GetActorLocation();
         float JorneyLength = (GlobalTargetLocation - GlobalStartLocation).Size();
@@ -43,5 +43,18 @@ void AMovingPlatform::Tick(float DeltaTime)
         FVector Direction = (GlobalTargetLocation - GlobalStartLocation).GetSafeNormal();
         Location += Speed * DeltaTime * Direction;
         SetActorLocation(Location);
+    }
+}
+
+void AMovingPlatform::AddActiveTrigger()
+{
+    ActiveTriggers++;
+}
+
+void AMovingPlatform::RemoveActiveTrigger()
+{
+    if (ActiveTriggers > 0)
+    {
+        ActiveTriggers--;
     }
 }
