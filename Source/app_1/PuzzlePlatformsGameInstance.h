@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "String/BytesToHex.h"
+
 #include "PuzzlePlatformsGameInstance.generated.h"
 
 /**
@@ -19,4 +21,9 @@ public:
     UPuzzlePlatformsGameInstance(const FObjectInitializer& ObjectIn);
 
     virtual void Init() override;
+
+    UFUNCTION(Exec)
+    void Host();
+    UFUNCTION(Exec)
+    void Join(const FString& args);
 };
