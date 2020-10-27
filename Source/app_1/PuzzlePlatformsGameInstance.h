@@ -23,5 +23,5 @@ public:
     UFUNCTION(Exec)
     void Host();
     UFUNCTION(Exec)
-    void Join(const FString& args);
+    void Join(const FString& Address);
 };
