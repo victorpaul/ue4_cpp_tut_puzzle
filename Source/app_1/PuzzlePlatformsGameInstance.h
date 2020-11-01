@@ -4,13 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "MenuSystem/MenuInterface.h"
+#include "MenuSystem/MainMenu.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class APP_1_API UPuzzlePlatformsGameInstance : public UGameInstance
+class APP_1_API UPuzzlePlatformsGameInstance : public UGameInstance, public IMenuInterface
 {
     GENERATED_BODY()
 
@@ -29,5 +31,5 @@ public:
 private:
 
     UPROPERTY()
-    TSubclassOf<class UUserWidget> MenuClass;
+    TSubclassOf<class UMainMenu> MenuClass;
 };
