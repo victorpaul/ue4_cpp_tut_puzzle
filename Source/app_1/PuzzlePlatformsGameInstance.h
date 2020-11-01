@@ -32,4 +32,5 @@ private:
 
     UPROPERTY()
     TSubclassOf<class UMainMenu> MenuClass;
+    class UMainMenu* Menu;
 };

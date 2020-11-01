@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "MenuInterface.h"
+#include "Components/WidgetSwitcher.h"
+#include "Components/EditableTextBox.h"
 #include "MainMenu.generated.h"
 
 /**
@@ -17,9 +19,10 @@ class APP_1_API UMainMenu : public UUserWidget
 
 public:
     UMainMenu(const FObjectInitializer& ObjectInitializer);
-
     void SetMenuInterface(IMenuInterface* Interface);
-    
+    void Setup();
+    void TearDown();
+
 protected:
     virtual bool Initialize();
 
@@ -29,11 +32,30 @@ private:
     class UButton* Host;
     UPROPERTY(meta=(BindWidget))
     class UButton* Join;
+    UPROPERTY(meta=(BindWidget))
+    class UButton* JoinMenu;
+    UPROPERTY(meta=(BindWidget))
+    class UButton* CancelJoinMenu;
+    UPROPERTY(meta=(BindWidget))
+    class UWidgetSwitcher* MenusSwitcher;
+    UPROPERTY(meta=(BindWidget))
+    class UEditableTextBox* IPAddress;
 
+    UPROPERTY(meta=(BindWidget))
+    class UWidget* MainMenu;
+    UPROPERTY(meta=(BindWidget))
+    class UWidget* JoinGameMenu;
+    
     UFUNCTION()
     void OnclickHost();
     UFUNCTION()
     void OnclickJoin();
-
+    UFUNCTION()
+    void OnclickJoinMenu();
+    UFUNCTION()
+    void OnclickBackToMainMenu();
+    UFUNCTION()
+    void SwitchMenu(UWidget* widget);
+    
     IMenuInterface* MenuInterface;
 };

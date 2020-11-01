@@ -25,23 +25,20 @@ void UPuzzlePlatformsGameInstance::Init()
 void UPuzzlePlatformsGameInstance::LoadMenu()
 {
     if (ensure(MenuClass==nullptr)) return;
-    UMainMenu* Menu = CreateWidget<UMainMenu>(this, MenuClass);
+    Menu = CreateWidget<UMainMenu>(this, MenuClass);
     if (!ensure(Menu!=nullptr)) return;
-    Menu->AddToViewport();
-    Menu->SetMenuInterface(this);
-    
-    APlayerController* PlayerController = GetFirstLocalPlayerController();
-    if (!ensure(PlayerController!=nullptr)) return;
 
-    FInputModeUIOnly InputMode;
-    InputMode.SetWidgetToFocus(Menu->TakeWidget());
-    InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-    PlayerController->SetInputMode(InputMode);
-    PlayerController->bShowMouseCursor = true;
+    Menu->SetMenuInterface(this);
+    Menu->Setup();
 }
 
 void UPuzzlePlatformsGameInstance::Host()
 {
+    if (Menu != nullptr)
+    {
+        Menu->TearDown();
+    }
+
     UEngine* Engine = GetEngine();
     UWorld* World = GetWorld();
     if (!ensure(Engine!=nullptr) || !ensure(World!=nullptr)) return;
@@ -52,6 +49,13 @@ void UPuzzlePlatformsGameInstance::Host()
 
 void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 {
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Join(%s)"), *Address);
+
+    if (Menu != nullptr)
+    {
+        Menu->TearDown();
+    }
+
     UEngine* Engine = GetEngine();
     APlayerController* PlayerController = GetFirstLocalPlayerController();
 
