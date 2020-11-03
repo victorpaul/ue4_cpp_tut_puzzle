@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+
+#include "MenuHelper.h"
 #include "MenuInterface.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableTextBox.h"
@@ -13,15 +14,12 @@
  * 
  */
 UCLASS()
-class APP_1_API UMainMenu : public UUserWidget
+class APP_1_API UMainMenu : public UMenuHelper
 {
     GENERATED_BODY()
 
 public:
     UMainMenu(const FObjectInitializer& ObjectInitializer);
-    void SetMenuInterface(IMenuInterface* Interface);
-    void Setup();
-    void TearDown();
 
 protected:
     virtual bool Initialize();
@@ -30,32 +28,46 @@ private:
 
     UPROPERTY(meta=(BindWidget))
     class UButton* Host;
+    
     UPROPERTY(meta=(BindWidget))
     class UButton* Join;
+    
     UPROPERTY(meta=(BindWidget))
     class UButton* JoinMenu;
+    
     UPROPERTY(meta=(BindWidget))
     class UButton* CancelJoinMenu;
+    
     UPROPERTY(meta=(BindWidget))
     class UWidgetSwitcher* MenusSwitcher;
+    
     UPROPERTY(meta=(BindWidget))
     class UEditableTextBox* IPAddress;
 
     UPROPERTY(meta=(BindWidget))
     class UWidget* MainMenu;
+    
     UPROPERTY(meta=(BindWidget))
     class UWidget* JoinGameMenu;
+
+    UPROPERTY(meta=(BindWidget))
+    class UButton* QuitGame;
     
     UFUNCTION()
     void OnclickHost();
+
     UFUNCTION()
-    void OnclickJoin();
+    void OnClickJoin();
+
     UFUNCTION()
-    void OnclickJoinMenu();
+    void OnClickJoinMenu();
+
     UFUNCTION()
-    void OnclickBackToMainMenu();
+    void OnClickBackToMainMenu();
+
     UFUNCTION()
     void SwitchMenu(UWidget* widget);
-    
-    IMenuInterface* MenuInterface;
+
+    UFUNCTION()
+    void OnClickQuitGame();
 };

@@ -23,14 +23,21 @@ public:
     virtual void Init() override;
     UFUNCTION(Exec, BlueprintCallable)
     void LoadMenu();
+    UFUNCTION(Exec, BlueprintCallable)
+    void ToggleGameMEnu();
     UFUNCTION(Exec)
-    void Host();
+    void Host() override;
     UFUNCTION(Exec)
-    void Join(const FString& Address);
+    void Join(const FString& Address) override;
+    UFUNCTION(Exec)
+    void LoadMainMenu() override;
+    UFUNCTION(Exec)
+    void QuitGame() override;
 
 private:
 
     UPROPERTY()
     TSubclassOf<class UMainMenu> MenuClass;
+    TSubclassOf<class UGameMenu> GameMenuClass;
     class UMainMenu* Menu;
 };

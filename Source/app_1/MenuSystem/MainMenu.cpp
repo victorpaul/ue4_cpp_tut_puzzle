@@ -2,7 +2,6 @@
 
 #include "MainMenu.h"
 
-#include "app_1/PuzzlePlatformsGameInstance.h"
 #include "Components/Button.h"
 
 UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
@@ -20,59 +19,24 @@ bool UMainMenu::Initialize()
     if (!ensure(JoinMenu!=nullptr)) return false;
     if (!ensure(CancelJoinMenu!=nullptr)) return false;
     if (!ensure(Join!=nullptr)) return false;
-
+    if (!ensure(QuitGame!=nullptr)) return false;
+    
     UE_LOG(LogTemp, Warning, TEXT("Lets bind buttons"));
 
     // Main Menu
     Host->OnClicked.AddDynamic(this, &UMainMenu::OnclickHost);
-    JoinMenu->OnClicked.AddDynamic(this, &UMainMenu::OnclickJoinMenu);
+    JoinMenu->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinMenu);
 
     // Join a Game
-    CancelJoinMenu->OnClicked.AddDynamic(this, &UMainMenu::OnclickBackToMainMenu);
-    Join->OnClicked.AddDynamic(this, &UMainMenu::OnclickJoin);
+    CancelJoinMenu->OnClicked.AddDynamic(this, &UMainMenu::OnClickBackToMainMenu);
+    Join->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoin);
+
+    //Quit game
+    QuitGame->OnClicked.AddDynamic(this, &UMainMenu::OnClickQuitGame);
 
     UE_LOG(LogTemp, Warning, TEXT("Buttons Host and Join are binded"));
 
     return true;
-}
-
-void UMainMenu::Setup()
-{
-    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::Setup()"));
-    UWorld* world = GetWorld();
-    if (!ensure(world!=nullptr)) return;
-
-    APlayerController* PlayerController = world->GetFirstPlayerController();
-    if (!ensure(PlayerController!=nullptr)) return;
-
-    this->AddToViewport();
-    FInputModeUIOnly InputMode;
-    InputMode.SetWidgetToFocus(this->TakeWidget());
-    InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-    PlayerController->SetInputMode(InputMode);
-    PlayerController->bShowMouseCursor = true;
-}
-
-void UMainMenu::TearDown()
-{
-    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::TearDown()"));
-
-    UWorld* world = GetWorld();
-    if (!ensure(world!=nullptr)) return;
-
-    APlayerController* PlayerController = world->GetFirstPlayerController();
-    if (!ensure(PlayerController!=nullptr)) return;
-
-    FInputModeGameOnly InputMode;
-    PlayerController->SetInputMode(InputMode);
-    PlayerController->bShowMouseCursor = false;
-
-    this->RemoveFromViewport();
-}
-
-void UMainMenu::SetMenuInterface(IMenuInterface* Interface)
-{
-    this->MenuInterface = Interface;
 }
 
 void UMainMenu::OnclickHost()
@@ -96,19 +60,19 @@ void UMainMenu::SwitchMenu(UWidget* widget)
     MenusSwitcher->SetActiveWidget(widget);
 }
 
-void UMainMenu::OnclickBackToMainMenu()
+void UMainMenu::OnClickBackToMainMenu()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickBackToMainMenu()"));
     SwitchMenu(MainMenu);
 }
 
-void UMainMenu::OnclickJoinMenu()
+void UMainMenu::OnClickJoinMenu()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickJoinMenu()"));
     SwitchMenu(JoinGameMenu);
 }
 
-void UMainMenu::OnclickJoin()
+void UMainMenu::OnClickJoin()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickJoin()"));
 
@@ -117,5 +81,15 @@ void UMainMenu::OnclickJoin()
         UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
 
         MenuInterface->Join(IPAddress->GetText().ToString());
+    }
+}
+
+void UMainMenu::OnClickQuitGame()
+{
+    if (MenuInterface != nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
+
+        MenuInterface->QuitGame();
     }
 }
