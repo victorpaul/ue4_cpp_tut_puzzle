@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "MenuSystem/MenuInterface.h"
 #include "MenuSystem/MainMenu.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
@@ -24,7 +25,7 @@ public:
     UFUNCTION(Exec, BlueprintCallable)
     void LoadMenu();
     UFUNCTION(Exec, BlueprintCallable)
-    void ToggleGameMEnu();
+    void LoadGameMenu();
     UFUNCTION(Exec)
     void Host() override;
     UFUNCTION(Exec)
@@ -38,6 +39,15 @@ private:
 
     UPROPERTY()
     TSubclassOf<class UMainMenu> MenuClass;
+    UPROPERTY()
     TSubclassOf<class UGameMenu> GameMenuClass;
     class UMainMenu* Menu;
+
+    IOnlineSessionPtr Session;
+    TSharedPtr<FOnlineSessionSearch> SessionSearch;
+    
+    void OnHostSessionDestroyed(FName SessionName, bool Success);
+    void OnHostSessionCreated(FName SessionName, bool success);
+    void OnFindSessionsCompleteDelegates(bool Found);
+    void CreateSession();
 };
