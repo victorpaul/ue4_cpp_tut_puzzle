@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 
 #include "MenuHelper.h"
-#include "MenuInterface.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableTextBox.h"
+#include "Components/ScrollBox.h"
+#include "FoundSessionRow.h"
 #include "MainMenu.generated.h"
 
 /**
@@ -28,6 +29,9 @@ private:
 
     UPROPERTY(meta=(BindWidget))
     class UButton* Host;
+
+    UPROPERTY(meta=(BindWidget))
+    class UButton* JoinByIp;
     
     UPROPERTY(meta=(BindWidget))
     class UButton* Join;
@@ -52,13 +56,22 @@ private:
 
     UPROPERTY(meta=(BindWidget))
     class UButton* QuitGame;
+
+    UPROPERTY(meta=(BindWidget))
+    class UScrollBox* ScrollBoxSessions;
+
+    UPROPERTY()
+    TSubclassOf<class UFoundSessionRow> FoundSessionRowClass;
     
     UFUNCTION()
     void OnclickHost();
 
     UFUNCTION()
-    void OnClickJoin();
+    void OnClickJoinByIp();
 
+    UFUNCTION()
+    void OnClickJoinBySession();
+    
     UFUNCTION()
     void OnClickJoinMenu();
 

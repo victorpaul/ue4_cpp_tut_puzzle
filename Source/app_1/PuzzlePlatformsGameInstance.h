@@ -29,6 +29,8 @@ public:
     UFUNCTION(Exec)
     void Host() override;
     UFUNCTION(Exec)
+    void JoinByIp(const FString& Address) override;
+    UFUNCTION(Exec)
     void Join(const FString& Address) override;
     UFUNCTION(Exec)
     void LoadMainMenu() override;

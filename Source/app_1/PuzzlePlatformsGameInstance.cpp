@@ -155,6 +155,24 @@ void UPuzzlePlatformsGameInstance::CreateSession()
     }
 }
 
+void UPuzzlePlatformsGameInstance::JoinByIp(const FString& Address)
+{
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Join(%s)"), *Address);
+
+    if (Menu != nullptr)
+    {
+        Menu->TearDown();
+    }
+
+    UEngine* Engine = GetEngine();
+    APlayerController* PlayerController = GetFirstLocalPlayerController();
+
+    if (!ensure(Engine!=nullptr) || !ensure(PlayerController!=nullptr)) return;
+
+    Engine->AddOnScreenDebugMessage(0, 5, FColor::Green, FString::Printf(TEXT("Joining: %s"), *Address));
+    PlayerController->ClientTravel(Address, TRAVEL_Absolute);
+}
+
 void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 {
     UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Join(%s)"), *Address);

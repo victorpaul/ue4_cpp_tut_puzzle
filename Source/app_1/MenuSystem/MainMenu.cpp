@@ -7,6 +7,10 @@
 UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
     UE_LOG(LogTemp, Warning, TEXT("Constructor of main menu"));
+
+    static ConstructorHelpers::FClassFinder<UUserWidget> FoundSessionRowBPWClass(TEXT("/Game/MenuSystem/WBP_FoundSessionRow"));
+    if (!ensure(FoundSessionRowBPWClass.Class!=nullptr)) return;
+    FoundSessionRowClass = FoundSessionRowBPWClass.Class;
 }
 
 bool UMainMenu::Initialize()
@@ -20,6 +24,7 @@ bool UMainMenu::Initialize()
     if (!ensure(CancelJoinMenu!=nullptr)) return false;
     if (!ensure(Join!=nullptr)) return false;
     if (!ensure(QuitGame!=nullptr)) return false;
+    if (!ensure(JoinByIp!=nullptr)) return false;    
     
     UE_LOG(LogTemp, Warning, TEXT("Lets bind buttons"));
 
@@ -29,7 +34,8 @@ bool UMainMenu::Initialize()
 
     // Join a Game
     CancelJoinMenu->OnClicked.AddDynamic(this, &UMainMenu::OnClickBackToMainMenu);
-    Join->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoin);
+    JoinByIp->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinByIp);
+    Join->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinBySession);
 
     //Quit game
     QuitGame->OnClicked.AddDynamic(this, &UMainMenu::OnClickQuitGame);
@@ -72,7 +78,7 @@ void UMainMenu::OnClickJoinMenu()
     SwitchMenu(JoinGameMenu);
 }
 
-void UMainMenu::OnClickJoin()
+void UMainMenu::OnClickJoinByIp()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickJoin()"));
 
@@ -80,7 +86,26 @@ void UMainMenu::OnClickJoin()
     {
         UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
 
-        MenuInterface->Join(IPAddress->GetText().ToString());
+        MenuInterface->JoinByIp(IPAddress->GetText().ToString());
+    }
+}
+
+void UMainMenu::OnClickJoinBySession()
+{
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickJoinBySession()"));
+
+    if(ScrollBoxSessions!=nullptr)
+    {
+        class UFoundSessionRow* Row = CreateWidget<UFoundSessionRow>(this, FoundSessionRowClass);
+        ScrollBoxSessions->AddChild(Row);
+    }
+    
+    if (MenuInterface != nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT(""));
+
+        
+        //MenuInterface->JoinByIp(IPAddress->GetText().ToString());
     }
 }
 
