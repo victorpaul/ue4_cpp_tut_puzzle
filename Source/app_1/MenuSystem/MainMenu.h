@@ -32,25 +32,25 @@ private:
 
     UPROPERTY(meta=(BindWidget))
     class UButton* JoinByIp;
-    
+
     UPROPERTY(meta=(BindWidget))
     class UButton* Join;
-    
+
     UPROPERTY(meta=(BindWidget))
     class UButton* JoinMenu;
-    
+
     UPROPERTY(meta=(BindWidget))
     class UButton* CancelJoinMenu;
-    
+
     UPROPERTY(meta=(BindWidget))
     class UWidgetSwitcher* MenusSwitcher;
-    
+
     UPROPERTY(meta=(BindWidget))
     class UEditableTextBox* IPAddress;
 
     UPROPERTY(meta=(BindWidget))
     class UWidget* MainMenu;
-    
+
     UPROPERTY(meta=(BindWidget))
     class UWidget* JoinGameMenu;
 
@@ -62,7 +62,7 @@ private:
 
     UPROPERTY()
     TSubclassOf<class UFoundSessionRow> FoundSessionRowClass;
-    
+
     UFUNCTION()
     void OnclickHost();
 
@@ -71,7 +71,7 @@ private:
 
     UFUNCTION()
     void OnClickJoinBySession();
-    
+
     UFUNCTION()
     void OnClickJoinMenu();
 
@@ -83,4 +83,10 @@ private:
 
     UFUNCTION()
     void OnClickQuitGame();
+
+    TOptional<uint32> SelectedSessionRowIndex;
+
+public:
+    void SetServersList(TArray<FString> ServerNames);
+    void SelectIndex(uint32 SessionIndex);
 };

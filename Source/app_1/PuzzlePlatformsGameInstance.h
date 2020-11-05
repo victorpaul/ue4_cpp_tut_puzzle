@@ -37,6 +37,8 @@ public:
     UFUNCTION(Exec)
     void QuitGame() override;
 
+    void RefreshSessions() override;
+
 private:
 
     UPROPERTY()

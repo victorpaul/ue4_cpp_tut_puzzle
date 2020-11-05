@@ -10,7 +10,7 @@
 UINTERFACE(MinimalAPI)
 class UMenuInterface : public UInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 };
 
 /**
@@ -18,14 +18,15 @@ class UMenuInterface : public UInterface
  */
 class APP_1_API IMenuInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+    // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void Host() = 0;
-	virtual void JoinByIp(const FString& Address) = 0;
-	virtual void Join(const FString& Address) = 0;
-	virtual void LoadMainMenu() = 0;
-	virtual void QuitGame() = 0;
+    virtual void Host() = 0;
+    virtual void JoinByIp(const FString& Address) = 0;
+    virtual void Join(const FString& Address) = 0;
+    virtual void LoadMainMenu() = 0;
+    virtual void QuitGame() = 0;
+    virtual void RefreshSessions() =0;
 };

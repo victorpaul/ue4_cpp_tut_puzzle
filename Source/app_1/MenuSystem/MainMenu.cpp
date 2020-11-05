@@ -8,7 +8,8 @@ UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer): Super(ObjectI
 {
     UE_LOG(LogTemp, Warning, TEXT("Constructor of main menu"));
 
-    static ConstructorHelpers::FClassFinder<UUserWidget> FoundSessionRowBPWClass(TEXT("/Game/MenuSystem/WBP_FoundSessionRow"));
+    static ConstructorHelpers::FClassFinder<UUserWidget> FoundSessionRowBPWClass(
+        TEXT("/Game/MenuSystem/WBP_FoundSessionRow"));
     if (!ensure(FoundSessionRowBPWClass.Class!=nullptr)) return;
     FoundSessionRowClass = FoundSessionRowBPWClass.Class;
 }
@@ -24,8 +25,8 @@ bool UMainMenu::Initialize()
     if (!ensure(CancelJoinMenu!=nullptr)) return false;
     if (!ensure(Join!=nullptr)) return false;
     if (!ensure(QuitGame!=nullptr)) return false;
-    if (!ensure(JoinByIp!=nullptr)) return false;    
-    
+    if (!ensure(JoinByIp!=nullptr)) return false;
+
     UE_LOG(LogTemp, Warning, TEXT("Lets bind buttons"));
 
     // Main Menu
@@ -76,6 +77,11 @@ void UMainMenu::OnClickJoinMenu()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickJoinMenu()"));
     SwitchMenu(JoinGameMenu);
+
+    if (!ensure(MenuInterface!=nullptr)) return;
+
+    // MenuInterface->RefreshSessions();
+    SetServersList({"Test1", "Test2"});
 }
 
 void UMainMenu::OnClickJoinByIp()
@@ -90,27 +96,54 @@ void UMainMenu::OnClickJoinByIp()
     }
 }
 
+void UMainMenu::SetServersList(TArray<FString> ServerNames)
+{
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::SetServersList()"));
+
+    if (ScrollBoxSessions != nullptr)
+    {
+        ScrollBoxSessions->ClearChildren();
+        uint32 index = 0;
+        for (const FString& ServerName : ServerNames)
+        {
+            class UFoundSessionRow* Row = CreateWidget<UFoundSessionRow>(this, FoundSessionRowClass);
+            Row->ServerName->SetText(FText::FromString(ServerName));
+            Row->Setup(this, index);
+            ++index;
+            ScrollBoxSessions->AddChild(Row);
+        }
+    }
+}
+
+void UMainMenu::SelectIndex(uint32 SessionIndex)
+{
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::SelectIndex(%d)"), SessionIndex);
+    SelectedSessionRowIndex = SessionIndex;
+}
+
 void UMainMenu::OnClickJoinBySession()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickJoinBySession()"));
-
-    if(ScrollBoxSessions!=nullptr)
+    if (SelectedSessionRowIndex.IsSet())
     {
-        class UFoundSessionRow* Row = CreateWidget<UFoundSessionRow>(this, FoundSessionRowClass);
-        ScrollBoxSessions->AddChild(Row);
+        UE_LOG(LogTemp, Warning, TEXT("SelectedSessionRowIndex=%d"), SelectedSessionRowIndex.GetValue());
     }
-    
-    if (MenuInterface != nullptr)
+    else
     {
-        UE_LOG(LogTemp, Warning, TEXT(""));
-
-        
-        //MenuInterface->JoinByIp(IPAddress->GetText().ToString());
+        UE_LOG(LogTemp, Warning, TEXT("SelectedSessionRowIndex is not set"));
     }
+
+
+    // if (MenuInterface != nullptr)
+    // {
+    //     MenuInterface->RefreshSessions();
+    // }
 }
 
 void UMainMenu::OnClickQuitGame()
 {
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickQuitGame()"));
+
     if (MenuInterface != nullptr)
     {
         UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
