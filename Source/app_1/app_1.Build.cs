@@ -9,6 +9,6 @@ public class app_1 : ModuleRules
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[]
-            {"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG","OnlineSubsystem"});
+            {"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG","OnlineSubsystem","OnlineSubsystemSteam"});
     }
 }

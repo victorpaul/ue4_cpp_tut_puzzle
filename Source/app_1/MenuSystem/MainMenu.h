@@ -8,7 +8,7 @@
 #include "Components/WidgetSwitcher.h"
 #include "Components/EditableTextBox.h"
 #include "Components/ScrollBox.h"
-#include "FoundSessionRow.h"
+
 #include "MainMenu.generated.h"
 
 /**

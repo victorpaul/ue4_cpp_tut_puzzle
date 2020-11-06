@@ -35,6 +35,10 @@
 		{
 			"Name": "RiderLink",
 			"Enabled": false
+		},
+		{
+			"Name": "OnlineSubsystemSteam",
+			"Enabled": true
 		}
 	]
 }

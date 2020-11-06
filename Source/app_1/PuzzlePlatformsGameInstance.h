@@ -31,7 +31,7 @@ public:
     UFUNCTION(Exec)
     void JoinByIp(const FString& Address) override;
     UFUNCTION(Exec)
-    void Join(const FString& Address) override;
+    void Join(uint32 SessionIndex) override;
     UFUNCTION(Exec)
     void LoadMainMenu() override;
     UFUNCTION(Exec)
@@ -53,5 +53,6 @@ private:
     void OnHostSessionDestroyed(FName SessionName, bool Success);
     void OnHostSessionCreated(FName SessionName, bool success);
     void OnFindSessionsCompleteDelegates(bool Found);
+    void OnJoinSessionCompleteDelegates(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
     void CreateSession();
 };

@@ -42,6 +42,8 @@ void UPuzzlePlatformsGameInstance::Init()
             this, &UPuzzlePlatformsGameInstance::OnHostSessionCreated);
         Session->OnFindSessionsCompleteDelegates.AddUObject(
             this, &UPuzzlePlatformsGameInstance::OnFindSessionsCompleteDelegates);
+        Session->OnJoinSessionCompleteDelegates.AddUObject(
+            this, &UPuzzlePlatformsGameInstance::OnJoinSessionCompleteDelegates);
     }
     else
     {
@@ -78,6 +80,25 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsCompleteDelegates(bool Found)
         }
         Menu->SetServersList(serverNames);
     }
+}
+
+void UPuzzlePlatformsGameInstance::OnJoinSessionCompleteDelegates(FName SessionName,
+                                                                  EOnJoinSessionCompleteResult::Type Result)
+{
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::OnJoinSessionCompleteDelegates(%s)"),
+           *SessionName.ToString());
+    if (!ensure(Session.IsValid()))return;
+    if (!ensure(Result == EOnJoinSessionCompleteResult::Success))return;
+
+    FString ConnectInfo;
+    if (!Session->GetResolvedConnectString(SESSION_NAME, ConnectInfo))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Connect info can not be recieved"));
+        return;
+    }
+
+    UE_LOG(LogTemp, Warning, TEXT("Join by IP: %s"), *ConnectInfo);
+    JoinByIp(ConnectInfo);
 }
 
 void UPuzzlePlatformsGameInstance::LoadMenu()
@@ -167,7 +188,7 @@ void UPuzzlePlatformsGameInstance::CreateSession()
 
 void UPuzzlePlatformsGameInstance::JoinByIp(const FString& Address)
 {
-    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Join(%s)"), *Address);
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::JoinByIp(%s)"), *Address);
 
     if (Menu != nullptr)
     {
@@ -183,22 +204,19 @@ void UPuzzlePlatformsGameInstance::JoinByIp(const FString& Address)
     PlayerController->ClientTravel(Address, TRAVEL_Absolute);
 }
 
-void UPuzzlePlatformsGameInstance::Join(const FString& Address)
+void UPuzzlePlatformsGameInstance::Join(uint32 SessionIndex)
 {
-    // UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Join(%s)"), *Address);
-    //
-    // if (Menu != nullptr)
-    // {
-    //     Menu->TearDown();
-    // }
-    //
-    // UEngine* Engine = GetEngine();
-    // APlayerController* PlayerController = GetFirstLocalPlayerController();
-    //
-    // if (!ensure(Engine!=nullptr) || !ensure(PlayerController!=nullptr)) return;
-    //
-    // Engine->AddOnScreenDebugMessage(0, 5, FColor::Green, FString::Printf(TEXT("Joining: %s"), *Address));
-    // PlayerController->ClientTravel(Address, TRAVEL_Absolute);
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Join(%d)"), SessionIndex);
+
+    if (!ensure(SessionSearch.IsValid())) return;
+    if (!ensure(Session.IsValid())) return;
+
+    if (Menu != nullptr)
+    {
+        Menu->TearDown();
+    }
+
+    Session->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[SessionIndex]);
 }
 
 void UPuzzlePlatformsGameInstance::LoadMainMenu()

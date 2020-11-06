@@ -3,7 +3,7 @@
 #include "MainMenu.h"
 
 #include "Components/Button.h"
-
+#include "FoundSessionRow.h"
 UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
     UE_LOG(LogTemp, Warning, TEXT("Constructor of main menu"));
@@ -80,8 +80,8 @@ void UMainMenu::OnClickJoinMenu()
 
     if (!ensure(MenuInterface!=nullptr)) return;
 
-    // MenuInterface->RefreshSessions();
-    SetServersList({"Test1", "Test2"});
+    MenuInterface->RefreshSessions();
+    // SetServersList({"Test1", "Test2"});
 }
 
 void UMainMenu::OnClickJoinByIp()
@@ -124,20 +124,15 @@ void UMainMenu::SelectIndex(uint32 SessionIndex)
 void UMainMenu::OnClickJoinBySession()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickJoinBySession()"));
-    if (SelectedSessionRowIndex.IsSet())
+    if (SelectedSessionRowIndex.IsSet() && MenuInterface != nullptr)
     {
         UE_LOG(LogTemp, Warning, TEXT("SelectedSessionRowIndex=%d"), SelectedSessionRowIndex.GetValue());
+        MenuInterface->Join(SelectedSessionRowIndex.GetValue());
     }
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("SelectedSessionRowIndex is not set"));
     }
-
-
-    // if (MenuInterface != nullptr)
-    // {
-    //     MenuInterface->RefreshSessions();
-    // }
 }
 
 void UMainMenu::OnClickQuitGame()
