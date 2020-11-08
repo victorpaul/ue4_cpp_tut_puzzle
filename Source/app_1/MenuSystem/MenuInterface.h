@@ -24,7 +24,7 @@ class APP_1_API IMenuInterface
 public:
 
     virtual void Host() = 0;
-    virtual void JoinByIp(const FString& Address) = 0;
+    virtual void JoinByGameAddress(const FString& Address) = 0;
     virtual void Join(uint32 SessionIndex) = 0;
     virtual void LoadMainMenu() = 0;
     virtual void QuitGame() = 0;

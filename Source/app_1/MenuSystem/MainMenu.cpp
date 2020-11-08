@@ -4,6 +4,7 @@
 
 #include "Components/Button.h"
 #include "FoundSessionRow.h"
+
 UMainMenu::UMainMenu(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
     UE_LOG(LogTemp, Warning, TEXT("Constructor of main menu"));
@@ -26,6 +27,7 @@ bool UMainMenu::Initialize()
     if (!ensure(Join!=nullptr)) return false;
     if (!ensure(QuitGame!=nullptr)) return false;
     if (!ensure(JoinByIp!=nullptr)) return false;
+    if (!ensure(Refresh!=nullptr)) return false;
 
     UE_LOG(LogTemp, Warning, TEXT("Lets bind buttons"));
 
@@ -37,6 +39,7 @@ bool UMainMenu::Initialize()
     CancelJoinMenu->OnClicked.AddDynamic(this, &UMainMenu::OnClickBackToMainMenu);
     JoinByIp->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinByIp);
     Join->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinBySession);
+    Refresh->OnClicked.AddDynamic(this, &UMainMenu::OnClickRefreshSessions);
 
     //Quit game
     QuitGame->OnClicked.AddDynamic(this, &UMainMenu::OnClickQuitGame);
@@ -92,11 +95,11 @@ void UMainMenu::OnClickJoinByIp()
     {
         UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
 
-        MenuInterface->JoinByIp(IPAddress->GetText().ToString());
+        MenuInterface->JoinByGameAddress(IPAddress->GetText().ToString());
     }
 }
 
-void UMainMenu::SetServersList(TArray<FString> ServerNames)
+void UMainMenu::SetServersList(TArray<FServerData> ServerNames)
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::SetServersList()"));
 
@@ -104,10 +107,17 @@ void UMainMenu::SetServersList(TArray<FString> ServerNames)
     {
         ScrollBoxSessions->ClearChildren();
         uint32 index = 0;
-        for (const FString& ServerName : ServerNames)
+        for (const FServerData& ServerData : ServerNames)
         {
             class UFoundSessionRow* Row = CreateWidget<UFoundSessionRow>(this, FoundSessionRowClass);
-            Row->ServerName->SetText(FText::FromString(ServerName));
+            Row->ServerName->SetText(FText::FromString(ServerData.ServerName));
+            Row->HostUsername->SetText(FText::FromString(ServerData.HostUsername));
+            Row->Players->SetText(
+                FText::FromString(
+                    FString::Printf(TEXT("Players %d/%d"), ServerData.PlayersCount, ServerData.MaxPlayers)));
+            Row->Ping->SetText(FText::FromString(FString::Printf(TEXT("ping %d"), ServerData.Ping)));
+            Row->ServerName->SetText(FText::FromString(ServerData.ServerName));
+
             Row->Setup(this, index);
             ++index;
             ScrollBoxSessions->AddChild(Row);
@@ -118,6 +128,23 @@ void UMainMenu::SetServersList(TArray<FString> ServerNames)
 void UMainMenu::SelectIndex(uint32 SessionIndex)
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::SelectIndex(%d)"), SessionIndex);
+
+    if (SelectedSessionRowIndex.IsSet())
+    {
+        UFoundSessionRow* Previous = Cast<UFoundSessionRow>(
+            ScrollBoxSessions->GetChildAt(SelectedSessionRowIndex.GetValue()));
+        if (Previous != nullptr)
+        {
+            Previous->IsSelectedRow = false;
+        }
+    }
+
+    UFoundSessionRow* ToSelect = Cast<UFoundSessionRow>(ScrollBoxSessions->GetChildAt(SessionIndex));
+    if (ToSelect != nullptr)
+    {
+        ToSelect->IsSelectedRow = true;
+    }
+
     SelectedSessionRowIndex = SessionIndex;
 }
 
@@ -132,6 +159,16 @@ void UMainMenu::OnClickJoinBySession()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("SelectedSessionRowIndex is not set"));
+    }
+}
+
+void UMainMenu::OnClickRefreshSessions()
+{
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickRefreshSessions()"));
+
+    if (MenuInterface != nullptr)
+    {
+        MenuInterface->RefreshSessions();
     }
 }
 

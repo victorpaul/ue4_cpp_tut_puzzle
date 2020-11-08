@@ -11,6 +11,17 @@
 
 #include "MainMenu.generated.h"
 
+USTRUCT()
+struct FServerData
+{
+    GENERATED_BODY()
+
+    FString ServerName;
+    FString HostUsername;
+    uint16 PlayersCount;
+    uint16 MaxPlayers;
+    uint32 Ping;
+};
 /**
  * 
  */
@@ -60,6 +71,9 @@ private:
     UPROPERTY(meta=(BindWidget))
     class UScrollBox* ScrollBoxSessions;
 
+    UPROPERTY(meta=(BindWidget))
+    class UButton* Refresh;
+
     UPROPERTY()
     TSubclassOf<class UFoundSessionRow> FoundSessionRowClass;
 
@@ -72,6 +86,9 @@ private:
     UFUNCTION()
     void OnClickJoinBySession();
 
+    UFUNCTION()
+    void OnClickRefreshSessions();
+    
     UFUNCTION()
     void OnClickJoinMenu();
 
@@ -87,6 +104,6 @@ private:
     TOptional<uint32> SelectedSessionRowIndex;
 
 public:
-    void SetServersList(TArray<FString> ServerNames);
+    void SetServersList(TArray<FServerData> ServerNames);
     void SelectIndex(uint32 SessionIndex);
 };

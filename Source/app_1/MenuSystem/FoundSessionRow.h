@@ -29,6 +29,14 @@ public:
 
     UPROPERTY(meta=(BindWidget))
     UTextBlock* ServerName;
+    UPROPERTY(meta=(BindWidget))
+    UTextBlock* Players;
+    UPROPERTY(meta=(BindWidget))
+    UTextBlock* Ping;
+    UPROPERTY(meta=(BindWidget))
+    UTextBlock* HostUsername;
+    UPROPERTY(BlueprintReadOnly)
+    bool IsSelectedRow = false;
 
     void Setup(class UMainMenu* menu, uint32 index);
 

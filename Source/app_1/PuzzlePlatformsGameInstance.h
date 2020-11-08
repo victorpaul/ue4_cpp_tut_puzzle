@@ -29,7 +29,7 @@ public:
     UFUNCTION(Exec)
     void Host() override;
     UFUNCTION(Exec)
-    void JoinByIp(const FString& Address) override;
+    void JoinByGameAddress(const FString& Address) override;
     UFUNCTION(Exec)
     void Join(uint32 SessionIndex) override;
     UFUNCTION(Exec)
