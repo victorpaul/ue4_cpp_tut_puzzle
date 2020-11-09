@@ -26,7 +26,7 @@ bool UMainMenu::Initialize()
     if (!ensure(CancelJoinMenu!=nullptr)) return false;
     if (!ensure(Join!=nullptr)) return false;
     if (!ensure(QuitGame!=nullptr)) return false;
-    if (!ensure(JoinByIp!=nullptr)) return false;
+    // if (!ensure(JoinByIp!=nullptr)) return false;
     if (!ensure(Refresh!=nullptr)) return false;
 
     UE_LOG(LogTemp, Warning, TEXT("Lets bind buttons"));
@@ -37,14 +37,18 @@ bool UMainMenu::Initialize()
 
     // Join a Game
     CancelJoinMenu->OnClicked.AddDynamic(this, &UMainMenu::OnClickBackToMainMenu);
-    JoinByIp->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinByIp);
+    // JoinByIp->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinByIp);
     Join->OnClicked.AddDynamic(this, &UMainMenu::OnClickJoinBySession);
     Refresh->OnClicked.AddDynamic(this, &UMainMenu::OnClickRefreshSessions);
+
+    // Create a game
+    CancelHost->OnClicked.AddDynamic(this, &UMainMenu::OnClickCancelHost);
+    CreateHost->OnClicked.AddDynamic(this, &UMainMenu::OnClickCreateHost);
 
     //Quit game
     QuitGame->OnClicked.AddDynamic(this, &UMainMenu::OnClickQuitGame);
 
-    UE_LOG(LogTemp, Warning, TEXT("Buttons Host and Join are binded"));
+    UE_LOG(LogTemp, Warning, TEXT("Buttons binded"));
 
     return true;
 }
@@ -53,11 +57,7 @@ void UMainMenu::OnclickHost()
 {
     UE_LOG(LogTemp, Warning, TEXT("Lets' host game"));
 
-    if (MenuInterface != nullptr)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Call interface Host"));
-        MenuInterface->Host();
-    }
+    SwitchMenu(HostGameMenu);
 }
 
 void UMainMenu::SwitchMenu(UWidget* widget)
@@ -87,17 +87,17 @@ void UMainMenu::OnClickJoinMenu()
     // SetServersList({"Test1", "Test2"});
 }
 
-void UMainMenu::OnClickJoinByIp()
-{
-    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickJoin()"));
-
-    if (MenuInterface != nullptr)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
-
-        MenuInterface->JoinByGameAddress(IPAddress->GetText().ToString());
-    }
-}
+// void UMainMenu::OnClickJoinByIp()
+// {
+//     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickJoin()"));
+//
+//     if (MenuInterface != nullptr)
+//     {
+//         UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
+//
+//         MenuInterface->JoinByGameAddress(IPAddress->GetText().ToString());
+//     }
+// }
 
 void UMainMenu::SetServersList(TArray<FServerData> ServerNames)
 {
@@ -114,8 +114,8 @@ void UMainMenu::SetServersList(TArray<FServerData> ServerNames)
             Row->HostUsername->SetText(FText::FromString(ServerData.HostUsername));
             Row->Players->SetText(
                 FText::FromString(
-                    FString::Printf(TEXT("Players %d/%d"), ServerData.PlayersCount, ServerData.MaxPlayers)));
-            Row->Ping->SetText(FText::FromString(FString::Printf(TEXT("ping %d"), ServerData.Ping)));
+                    FString::Printf(TEXT("%d/%d"), ServerData.PlayersCount, ServerData.MaxPlayers)));
+            Row->Ping->SetText(FText::FromString(FString::Printf(TEXT("%d"), ServerData.Ping)));
             Row->ServerName->SetText(FText::FromString(ServerData.ServerName));
 
             Row->Setup(this, index);
@@ -181,5 +181,22 @@ void UMainMenu::OnClickQuitGame()
         UE_LOG(LogTemp, Warning, TEXT("Call interface Join"));
 
         MenuInterface->QuitGame();
+    }
+}
+
+void UMainMenu::OnClickCancelHost()
+{
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickCancelHost()"));
+    SwitchMenu(MainMenu);
+}
+
+void UMainMenu::OnClickCreateHost()
+{
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickCreateHost()"));
+    if (MenuInterface != nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Call interface Host"));
+        
+        MenuInterface->Host(GameName->GetText().ToString());
     }
 }

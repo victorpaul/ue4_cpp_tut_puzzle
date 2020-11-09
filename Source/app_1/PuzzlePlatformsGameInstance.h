@@ -27,7 +27,7 @@ public:
     UFUNCTION(Exec, BlueprintCallable)
     void LoadGameMenu();
     UFUNCTION(Exec)
-    void Host() override;
+    void Host(const FString& ServerName) override;
     UFUNCTION(Exec)
     void JoinByGameAddress(const FString& Address) override;
     UFUNCTION(Exec)
@@ -54,5 +54,7 @@ private:
     void OnHostSessionCreated(FName SessionName, bool success);
     void OnFindSessionsCompleteDelegates(bool Found);
     void OnJoinSessionCompleteDelegates(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
-    void CreateSession();
+    void CreateSession(const FString& ServerName);
+
+    FString GameServerName;
 };

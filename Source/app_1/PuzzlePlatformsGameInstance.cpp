@@ -13,6 +13,7 @@
 #include "MenuSystem/GameMenu.h"
 
 const static FName SESSION_NAME = TEXT("Let's roll");
+const static FName SERVER_NAME_KEY = TEXT("ServerName");
 const static uint16 MAX_PLAYERS = 4;
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitializer& ObjectIn)
@@ -82,8 +83,14 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsCompleteDelegates(bool Found)
                 Data.ServerName = FoundSession.GetSessionIdStr();
                 Data.HostUsername = FoundSession.Session.OwningUserName;
                 Data.MaxPlayers = FoundSession.Session.SessionSettings.NumPublicConnections;
-                Data.PlayersCount = FoundSession.Session.NumOpenPublicConnections;
+                Data.PlayersCount = Data.MaxPlayers - FoundSession.Session.NumOpenPublicConnections;
                 Data.Ping = FoundSession.PingInMs;
+
+                FString ServerName;
+                if (FoundSession.Session.SessionSettings.Get(SERVER_NAME_KEY, ServerName))
+                {
+                    Data.ServerName = ServerName;
+                }
 
                 serverNames.Add(Data);
             }
@@ -138,7 +145,7 @@ void UPuzzlePlatformsGameInstance::OnHostSessionDestroyed(FName SessionName, boo
            *SessionName.ToString(), Success);
     if (Success)
     {
-        CreateSession();
+        CreateSession(GameServerName);
     }
 }
 
@@ -166,10 +173,13 @@ void UPuzzlePlatformsGameInstance::OnHostSessionCreated(FName SessionName, bool 
     }
 }
 
-void UPuzzlePlatformsGameInstance::Host()
+void UPuzzlePlatformsGameInstance::Host(const FString& ServerName)
 {
-    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Host()"));
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Host(%s)"), *ServerName);
     if (!Session.IsValid()) return;
+
+    GameServerName = ServerName;
+
     auto ExistingSession = Session->GetNamedSession(SESSION_NAME);
     if (ExistingSession != nullptr)
     {
@@ -180,11 +190,11 @@ void UPuzzlePlatformsGameInstance::Host()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("No existing session, let's create new one"));
-        CreateSession();
+        CreateSession(ServerName);
     }
 }
 
-void UPuzzlePlatformsGameInstance::CreateSession()
+void UPuzzlePlatformsGameInstance::CreateSession(const FString& ServerName)
 {
     bool IsLan = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL";
     UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::CreateSession(), LAN=%d, Subsystem=%s"), IsLan,
@@ -197,6 +207,8 @@ void UPuzzlePlatformsGameInstance::CreateSession()
         settings.NumPublicConnections = MAX_PLAYERS;
         settings.bShouldAdvertise = true;
         settings.bUsesPresence = true;
+        settings.Set(SERVER_NAME_KEY, ServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+
         Session->CreateSession(0, SESSION_NAME, settings);
     }
 }

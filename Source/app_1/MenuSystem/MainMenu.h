@@ -41,8 +41,8 @@ private:
     UPROPERTY(meta=(BindWidget))
     class UButton* Host;
 
-    UPROPERTY(meta=(BindWidget))
-    class UButton* JoinByIp;
+    // UPROPERTY(meta=(BindWidget))
+    // class UButton* JoinByIp;
 
     UPROPERTY(meta=(BindWidget))
     class UButton* Join;
@@ -56,8 +56,8 @@ private:
     UPROPERTY(meta=(BindWidget))
     class UWidgetSwitcher* MenusSwitcher;
 
-    UPROPERTY(meta=(BindWidget))
-    class UEditableTextBox* IPAddress;
+    // UPROPERTY(meta=(BindWidget))
+    // class UEditableTextBox* IPAddress;
 
     UPROPERTY(meta=(BindWidget))
     class UWidget* MainMenu;
@@ -80,8 +80,8 @@ private:
     UFUNCTION()
     void OnclickHost();
 
-    UFUNCTION()
-    void OnClickJoinByIp();
+    // UFUNCTION()
+    // void OnClickJoinByIp();
 
     UFUNCTION()
     void OnClickJoinBySession();
@@ -103,6 +103,19 @@ private:
 
     TOptional<uint32> SelectedSessionRowIndex;
 
+    UPROPERTY(meta=(BindWidget))
+    class UWidget* HostGameMenu;
+    UPROPERTY(meta=(BindWidget))
+    class UButton* CancelHost;
+    UPROPERTY(meta=(BindWidget))
+    class UButton* CreateHost;
+    UPROPERTY(meta=(BindWidget))
+    class UEditableTextBox* GameName;
+    UFUNCTION()
+    void OnClickCancelHost();
+    UFUNCTION()
+    void OnClickCreateHost();
+    
 public:
     void SetServersList(TArray<FServerData> ServerNames);
     void SelectIndex(uint32 SessionIndex);
