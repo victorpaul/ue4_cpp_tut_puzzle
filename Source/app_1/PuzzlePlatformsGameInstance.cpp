@@ -145,31 +145,7 @@ void UPuzzlePlatformsGameInstance::OnHostSessionDestroyed(FName SessionName, boo
            *SessionName.ToString(), Success);
     if (Success)
     {
-        CreateSession(GameServerName);
-    }
-}
-
-void UPuzzlePlatformsGameInstance::OnHostSessionCreated(FName SessionName, bool success)
-{
-    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::OnSessionCreated(%s)"), *SessionName.ToString());
-    if (success)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Session creted"));
-        if (Menu != nullptr)
-        {
-            Menu->TearDown();
-        }
-
-        UEngine* Engine = GetEngine();
-        UWorld* World = GetWorld();
-        if (!ensure(Engine!=nullptr) || !ensure(World!=nullptr)) return;
-
-        Engine->AddOnScreenDebugMessage(0, 2, FColor::Green,TEXT("Hosting"));
-        World->ServerTravel("/Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap?listen");
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Session was not creted"));
+        CreateSession(Menu->GetServerName());
     }
 }
 
@@ -177,8 +153,6 @@ void UPuzzlePlatformsGameInstance::Host(const FString& ServerName)
 {
     UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::Host(%s)"), *ServerName);
     if (!Session.IsValid()) return;
-
-    GameServerName = ServerName;
 
     auto ExistingSession = Session->GetNamedSession(SESSION_NAME);
     if (ExistingSession != nullptr)
@@ -210,6 +184,31 @@ void UPuzzlePlatformsGameInstance::CreateSession(const FString& ServerName)
         settings.Set(SERVER_NAME_KEY, ServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
         Session->CreateSession(0, SESSION_NAME, settings);
+    }
+}
+
+void UPuzzlePlatformsGameInstance::OnHostSessionCreated(FName SessionName, bool success)
+{
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::OnSessionCreated(%s)"), *SessionName.ToString());
+    if (success)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Session creted"));
+        if (Menu != nullptr)
+        {
+            Menu->TearDown();
+        }
+
+        UEngine* Engine = GetEngine();
+        if (!ensure(Engine!=nullptr)) return;
+        UWorld* World = GetWorld();
+        if (!ensure(World!=nullptr)) return;
+
+        Engine->AddOnScreenDebugMessage(0, 2, FColor::Green,TEXT("Hosting"));
+        World->ServerTravel("/Game/PuzzlePlatform/Maps/MAP_Lobby?listen");
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Session was not creted"));
     }
 }
 

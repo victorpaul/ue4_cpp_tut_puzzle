@@ -13,6 +13,8 @@ class Aapp_1GameMode : public AGameModeBase
 
 public:
 	Aapp_1GameMode();
+
+	// virtual void PrintOnScreen(FString message);
 };
 
 

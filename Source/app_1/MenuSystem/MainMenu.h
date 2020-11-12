@@ -119,4 +119,5 @@ private:
 public:
     void SetServersList(TArray<FServerData> ServerNames);
     void SelectIndex(uint32 SessionIndex);
+    FString GetServerName();
 };

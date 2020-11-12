@@ -56,5 +56,4 @@ private:
     void OnJoinSessionCompleteDelegates(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
     void CreateSession(const FString& ServerName);
 
-    FString GameServerName;
 };

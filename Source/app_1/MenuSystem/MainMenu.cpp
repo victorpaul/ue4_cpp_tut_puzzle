@@ -76,6 +76,12 @@ void UMainMenu::OnClickBackToMainMenu()
     SwitchMenu(MainMenu);
 }
 
+void UMainMenu::OnClickCancelHost()
+{
+    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickCancelHost()"));
+    SwitchMenu(MainMenu);
+}
+
 void UMainMenu::OnClickJoinMenu()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnclickJoinMenu()"));
@@ -184,12 +190,6 @@ void UMainMenu::OnClickQuitGame()
     }
 }
 
-void UMainMenu::OnClickCancelHost()
-{
-    UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickCancelHost()"));
-    SwitchMenu(MainMenu);
-}
-
 void UMainMenu::OnClickCreateHost()
 {
     UE_LOG(LogTemp, Warning, TEXT("UMainMenu::OnClickCreateHost()"));
@@ -197,6 +197,11 @@ void UMainMenu::OnClickCreateHost()
     {
         UE_LOG(LogTemp, Warning, TEXT("Call interface Host"));
         
-        MenuInterface->Host(GameName->GetText().ToString());
+        MenuInterface->Host(GetServerName());
     }
+}
+
+FString UMainMenu::GetServerName()
+{
+    return GameName->GetText().ToString();
 }
