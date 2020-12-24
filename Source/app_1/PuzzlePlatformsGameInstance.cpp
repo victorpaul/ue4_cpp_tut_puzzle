@@ -12,19 +12,19 @@
 #include "MenuSystem/MainMenu.h"
 #include "MenuSystem/GameMenu.h"
 
-const static FName SESSION_NAME = TEXT("Let's roll");
+const static FName SESSION_NAME = NAME_GameSession;
 const static FName SERVER_NAME_KEY = TEXT("ServerName");
 const static uint16 MAX_PLAYERS = 4;
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitializer& ObjectIn)
 {
     static ConstructorHelpers::FClassFinder<UUserWidget> MainManuBPWClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
-    if (!ensure(MainManuBPWClass.Class!=nullptr)) return;
+    if (!ensure(MainManuBPWClass.Succeeded())) return;
     MenuClass = MainManuBPWClass.Class;
     UE_LOG(LogTemp, Warning, TEXT("Found class %s in constructor"), *MenuClass->GetName());
 
     static ConstructorHelpers::FClassFinder<UUserWidget> GameManuBPWClass(TEXT("/Game/MenuSystem/WBP_InGameMenu"));
-    if (!ensure(GameManuBPWClass.Class!=nullptr)) return;
+    if (!ensure(GameManuBPWClass.Succeeded())) return;
     GameMenuClass = GameManuBPWClass.Class;
     UE_LOG(LogTemp, Warning, TEXT("Found class %s in constructor"), *GameMenuClass->GetName());
 }
@@ -209,6 +209,15 @@ void UPuzzlePlatformsGameInstance::OnHostSessionCreated(FName SessionName, bool 
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("Session was not creted"));
+    }
+}
+
+void UPuzzlePlatformsGameInstance::StartSession()
+{
+    UE_LOG(LogTemp, Warning, TEXT("UPuzzlePlatformsGameInstance::StartSession"));
+    if (Session.IsValid())
+    {
+        Session->StartSession(SESSION_NAME);
     }
 }
 

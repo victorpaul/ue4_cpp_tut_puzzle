@@ -38,6 +38,7 @@ public:
     void QuitGame() override;
 
     void RefreshSessions() override;
+    void StartSession();
 
 private:
 
